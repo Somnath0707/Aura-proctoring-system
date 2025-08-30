@@ -90,6 +90,6 @@ This project is licensed under the MIT License.
 
 ## Contact
 For any inquiries or contributions, feel free to reach out to:
-- **Email**: 077bct066@ioepc.edu.np
+- **Email**: rammey115@gmail.com
 - **Phone**: 9819936338
 
