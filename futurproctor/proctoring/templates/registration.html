@@ -1,97 +1,333 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration</title>
+    <title>Join Aura | Intelligent Integrity</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        body {
-            background-color: #f8f9fa;
+        /* =========================
+           1. GLOBAL THEME (AURA)
+        ========================= */
+        :root {
+            --primary: #6366f1;       /* Indigo */
+            --primary-glow: #818cf8;
+            --secondary: #a855f7;     /* Violet */
+            --accent: #22d3ee;        /* Cyan */
+            --bg-deep: #020617;       /* Deepest Slate */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
-        #camera {
-            width: 100%;
-            max-width: 300px;
-            height: 225px;
-            border-radius: 10px;
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15), transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(34, 211, 238, 0.1), transparent 25%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px 0;
+        }
+
+        /* =========================
+           2. FORM CARD
+        ========================= */
+        .form-container {
+            max-width: 650px;
             margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 80px -12px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+        }
+
+        /* =========================
+           3. HEADER
+        ========================= */
+        .card-header {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .brand-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        /* =========================
+           4. FORM ELEMENTS
+        ========================= */
+        .form-label {
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder { color: #475569; }
+
+        .form-control:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            color: #fff;
+        }
+
+        .form-text { color: #64748b; font-size: 0.8rem; margin-top: 6px; }
+
+        /* =========================
+           5. CAMERA UI
+        ========================= */
+        .camera-wrapper {
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        #camera {
+            width: 100% !important;
+            height: auto !important;
             display: block;
         }
-        .form-container {
-            max-width: 600px;
-            margin: 50px auto;
+        
+        /* Scan Line Animation */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+            animation: scan 2.5s linear infinite;
+            z-index: 10;
+            opacity: 0.8;
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .photo-preview img {
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-top: 15px;
+        }
+
+        /* =========================
+           6. BUTTONS
+        ========================= */
+        .btn-capture {
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            color: var(--accent);
+            border-radius: 12px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .btn-capture:hover {
+            background: rgba(34, 211, 238, 0.2);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.5);
+            color: white;
+        }
+        .btn-register:disabled {
+            background: #334155;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           7. FOOTER & ALERTS
+        ========================= */
+        .card-footer {
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .card-footer a { color: var(--primary-glow); text-decoration: none; }
+        .card-footer a:hover { text-decoration: underline; }
+
+        .alert {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-3">
+
+    <div class="container fixed-top mt-3" style="max-width: 600px; z-index: 9999;">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+                <div class="alert alert-dismissible fade show shadow-lg" role="alert">
+                    <i class="fa-solid fa-circle-info me-2"></i> {{ message }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
         {% endif %}
     </div>
 
     <div class="container">
-        <div class="card shadow-lg form-container">
-            <div class="card-header text-center bg-primary text-white">
-                <h2>Student Registration</h2>
+        <div class="form-container">
+            
+            <div class="card-header">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-shield-halved text-primary"></i> Aura
+                </div>
+                <div class="header-subtitle">Create your secure candidate profile</div>
             </div>
+
             <div class="card-body">
                 <form method="POST" id="registration-form">
                     {% csrf_token %}
                     
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name:</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required>
-                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="e.g. John Doe" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address:</label>
-                        <textarea id="address" name="address" class="form-control" placeholder="Enter your address" required></textarea>
-                    </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="name@university.edu" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
-                    </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" id="address" name="address" class="form-control" placeholder="Street, City, Zip Code" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password:</label>
-                        <input type="password" id="password" name="password" class="form-control" 
-                               placeholder="Create a password" required minlength="8" 
-                               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" aria-describedby="passwordHelp">
-                        <div id="passwordHelp" class="form-text">
-                            Password must be at least 8 characters and include uppercase, lowercase, and numbers.
+                        <div class="col-md-12 mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" id="password" name="password" class="form-control" 
+                                   placeholder="Create a strong password" required minlength="8" 
+                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" aria-describedby="passwordHelp">
+                            <div id="passwordHelp" class="form-text">
+                                <i class="fa-solid fa-lock me-1"></i> Min 8 chars, uppercase, lowercase & number.
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3 text-center">
-                        <label class="form-label">Capture Photo:</label>
-                        <div id="camera" class="border mb-3"></div>
-                        <button type="button" id="capture-btn" class="btn btn-primary">Capture Photo</button>
-                        <input type="hidden" id="photo-data" name="photo_data">
-                        <div id="photo-preview" class="mt-3"></div>
+                    <div class="mb-4 text-center p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px dashed var(--glass-border);">
+                        <label class="form-label d-block mb-3 text-white"><i class="fa-solid fa-face-viewfinder me-2"></i>Biometric Registration</label>
+                        
+                        <div class="camera-wrapper">
+                            <div class="scan-line"></div>
+                            <div id="camera"></div>
+                        </div>
+
+                        <button type="button" id="capture-btn" class="btn btn-capture">
+                            <i class="fa-solid fa-camera me-2"></i> Capture Identity
+                        </button>
+                        
+                        <input type="hidden" id="photo-data" name="photo_data" required>
+                        <div id="photo-preview" class="photo-preview"></div>
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100">Register</button>
+                    <button type="submit" class="btn btn-register w-100" id="submit-btn">
+                        Create Account <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </button>
                 </form>
             </div>
-            <div class="card-footer text-center text-muted">
-                <small>&copy; 2025 Registration Portal</small>
+
+            <div class="card-footer">
+                Already have an account? <a href="{% url 'login' %}">Log in here</a>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    
     <script>
-        // Initialize the webcam
+        // Initialize the webcam with updated sizing
         Webcam.set({
-            width: 300,
-            height: 225,
+            width: 320,
+            height: 240,
             image_format: 'jpeg',
-            jpeg_quality: 90
+            jpeg_quality: 90,
+            flip_horiz: true // Mirror mode for better UX
         });
 
         Webcam.attach('#camera');
@@ -99,15 +335,33 @@
         // Capture the photo
         document.getElementById('capture-btn').addEventListener('click', function () {
             Webcam.snap(function (data_uri) {
-                document.getElementById('photo-data').value = data_uri; // Store base64 image data
+                // Save data
+                document.getElementById('photo-data').value = data_uri;
+                
+                // Show preview
                 document.getElementById('photo-preview').innerHTML = 
-                    `<img src="${data_uri}" class="img-thumbnail" style="max-width: 200px;">`;
+                    `<img src="${data_uri}" class="img-fluid" style="max-width: 150px;">
+                     <div class="text-success small mt-2"><i class="fa-solid fa-check-circle me-1"></i>Photo Captured</div>`;
+                
+                // Change button state
+                const btn = document.getElementById('capture-btn');
+                btn.innerHTML = '<i class="fa-solid fa-rotate me-2"></i> Retake Photo';
+                btn.style.borderColor = 'var(--text-muted)';
+                btn.style.color = 'var(--text-muted)';
             });
         });
 
-        // Prevent duplicate submissions
-        document.getElementById('registration-form').addEventListener('submit', function () {
-            this.querySelector('button[type="submit"]').disabled = true;
+        // Prevent submission without photo
+        document.getElementById('registration-form').addEventListener('submit', function (e) {
+            const photo = document.getElementById('photo-data').value;
+            if (!photo) {
+                e.preventDefault();
+                alert("Please capture your photo for biometric registration.");
+            } else {
+                const btn = document.getElementById('submit-btn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Registering...';
+            }
         });
     </script>
 </body>

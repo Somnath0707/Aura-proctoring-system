@@ -501,7 +501,7 @@ def exam(request):
 
     # Load exam questions from the JSON file
     try:
-        with open("D://Futurproctor//futurproctor//proctoring//dummy_data//ai.json") as file:
+        with open("proctoring/dummy_data/ai.json") as file:
             data = json.load(file)
         questions = data.get("questions", [])
     except FileNotFoundError:
@@ -533,7 +533,7 @@ def submit_exam(request):
 
         # Load questions from ai.json
         try:
-            with open('D:\\Futurproctor\\futurproctor\\proctoring\\dummy_data\\ai.json', 'r') as file:
+            with open('proctoring/dummy_data/ai.json', 'r') as file:
                 data = json.load(file)
         except FileNotFoundError:
             return HttpResponse("Error: Questions file not found!", status=404)
@@ -746,9 +746,13 @@ def get_detected_objects_string(cheating_events):
 ### Report view
 def report_page(request, student_id):
     student = get_object_or_404(Student, id=student_id)
-    exam = student.exams.first()  # Or however you want to choose the exam
+    exam = student.exams.first()  # This might be None
     cheating_events = CheatingEvent.objects.filter(student=student)
 
+    # 1. Provide safe defaults if exam is None
+    correct_answers = exam.correct_answers if exam else 0
+    total_questions = exam.total_questions if exam else 0
+    
     # Aggregate detected objects as a list
     detected_objects_list = get_detected_objects_string(cheating_events)
     detected_objects_str = ", ".join(detected_objects_list) if detected_objects_list else "No objects detected"
@@ -756,8 +760,6 @@ def report_page(request, student_id):
     # Sum up tab switch count from events
     total_tab_switch_count = cheating_events.aggregate(total=Sum('tab_switch_count'))['total'] or 0
 
-    # Audio files: if you're using a FileField, Django automatically converts the stored file path
-    # into a URL via the `.url` attribute once media is configured correctly.
     cheating_audios = CheatingAudio.objects.filter(event__student=student)
     audio_urls = [audio.audio.url for audio in cheating_audios if audio.audio]
 
@@ -766,9 +768,9 @@ def report_page(request, student_id):
         'exam': exam,
         'detected_objects': detected_objects_str,
         'total_tab_switch_count': total_tab_switch_count,
-        # You can also add correct answer attempt and total questions:
-        'correct_answers': exam.correct_answers,
-        'total_questions': exam.total_questions,
+        # 2. Use the safe variables here:
+        'correct_answers': correct_answers,
+        'total_questions': total_questions,
         'cheating_status': any(
             event.event_type in ['object_detected', 'multiple_faces_detected', 'tab_switch']
             for event in cheating_events
@@ -782,7 +784,7 @@ def report_page(request, student_id):
             for img in CheatingImage.objects.filter(event__student=student)
         ],
         'audio_urls': audio_urls,
-        'cheating_events': cheating_events,  # if you need to list them
+        'cheating_events': cheating_events, 
     }
     return render(request, 'report_page.html', context)
 

@@ -1,76 +1,408 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - FuturProctor</title>
+    <title>Admin Command | Aura</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        .zoomable-image {
-            cursor: pointer;
+        /* =========================
+           1. AURA THEME VARIABLES
+        ========================= */
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --accent: #22d3ee;
+            --bg-deep: #020617;
+            --glass-bg: rgba(30, 41, 59, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.1), transparent 40%),
+                radial-gradient(circle at 100% 0%, rgba(34, 211, 238, 0.1), transparent 40%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .navbar-brand {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* =========================
+           2. NAVBAR & SIDEBAR
+        ========================= */
+        .navbar {
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            height: 70px;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.4rem;
+        }
+
+        .sidebar {
+            background: var(--glass-bg);
+            border-right: 1px solid var(--glass-border);
+            min-height: calc(100vh - 70px);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+        }
+
+        .nav-link i { width: 20px; text-align: center; }
+
+        /* Add Question Button (Gradient) */
+        .btn-add-q {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
             transition: transform 0.2s;
         }
-        .zoomable-image:hover {
-            transform: scale(1.1);
+        .btn-add-q:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+        }
+
+        /* =========================
+           3. MAIN CONTENT AREA
+        ========================= */
+        .main-content {
+            padding: 30px;
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .stat-info h5 { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+        .stat-info h3 { margin: 0; font-weight: 700; }
+
+        /* Search Bar */
+        .search-wrapper {
+            position: relative;
+            max-width: 400px;
+        }
+        .search-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px 20px 12px 45px;
+            border-radius: 50px;
+            width: 100%;
+        }
+        .search-input:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            outline: none;
+        }
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* =========================
+           4. DATA TABLE (Glass)
+        ========================= */
+        .table-container {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            margin-top: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .table {
+            margin-bottom: 0;
+            color: var(--text-main);
+        }
+
+        .table thead {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 18px;
+            border-bottom: 1px solid var(--glass-border);
+            background: transparent;
+        }
+
+        .table td {
+            padding: 18px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--glass-border);
+            background: transparent;
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--glass-border);
+            transition: all 0.2s;
+            margin-right: 5px;
+            text-decoration: none;
+        }
+        
+        .btn-view { background: rgba(34, 211, 238, 0.1); color: var(--accent); }
+        .btn-view:hover { background: var(--accent); color: #000; }
+
+        .btn-edit { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .btn-edit:hover { background: var(--warning); color: #000; }
+
+        .btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .btn-delete:hover { background: var(--danger); color: white; }
+
+        /* Trust Score Bar */
+        .trust-track {
+            width: 100px;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .trust-fill {
+            height: 100%;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Panel -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">AI-Based Online Exam Proctoring System</a>
-            <div class="d-flex ms-auto">
-                <a href="{% url 'home' %}" class="btn btn-outline-danger">Logout</a>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#">
+                <i class="fa-solid fa-shield-halved me-2 text-primary"></i> Aura Admin
+            </a>
+            <div class="d-flex ms-auto align-items-center">
+                <span class="text-muted me-3 d-none d-md-block">Administrator</span>
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                </a>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid mt-4">
+    <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 bg-light py-4">
+            
+            <div class="col-lg-2 sidebar d-none d-lg-block py-4 px-3">
+                <p class="text-muted small text-uppercase fw-bold mb-3 px-2">Menu</p>
                 <ul class="nav flex-column">
-                    <li class="nav-item mb-2">
-                        <a class="nav-link text-dark" href="#">Dashboard</a>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fa-solid fa-chart-line"></i> Dashboard
+                        </a>
                     </li>
-                    <li class="nav-item mb-2">
-                        <a class="btn btn-primary" href="{% url 'add_question' %}">Add Question</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fa-solid fa-users"></i> Examinees
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fa-solid fa-file-shield"></i> Reports
+                        </a>
                     </li>
                 </ul>
+
+                <a href="{% url 'add_question' %}" class="btn btn-add-q">
+                    <i class="fa-solid fa-plus me-2"></i> Add Question
+                </a>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-md-10">
-                <div class="container">
-                    <h2 class="mt-4">Examinees List</h2>
-                    <div class="input-group mb-3">
-                        <input type="text" id="searchBar" placeholder="Search by name or email..." class="form-control">
+            <div class="col-lg-10 col-md-12 main-content">
+                
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div>
+                        <h2 class="fw-bold mb-1">Examinee Overview</h2>
+                        <p class="text-muted mb-0">Monitor real-time exam integrity and results.</p>
                     </div>
+                    
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="searchBar" placeholder="Search students..." class="search-input">
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-info">
+                                <h5>Total Candidates</h5>
+                                <h3>{{ students|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(34, 211, 238, 0.1); color: var(--accent);"><i class="fa-solid fa-check-circle"></i></div>
+                            <div class="stat-info">
+                                <h5>Active Exams</h5>
+                                <h3>Active</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-shield-heart"></i></div>
+                            <div class="stat-info">
+                                <h5>Avg. Trust Score</h5>
+                                <h3>94%</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead class="table-dark">
+                        <table class="table table-hover align-middle">
+                            <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Candidate Name</th>
                                     <th>Email</th>
-                                    <th>Exam Name</th>
-                                    <th>Score (%)</th>
-                                    <th>Trust Score (%)</th>
-                                    <th>Actions</th>
+                                    <th>Exam Status</th>
+                                    <th>Score</th>
+                                    <th>Trust Rating</th>
+                                    <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for student in students %}
                                 <tr>
-                                    <td>{{ student.name }}</td>
-                                    <td>{{ student.email }}</td>
-                                    <td>{{ student.exams.first.exam_name|default:"No Exam" }}</td>
-                                    <td>{{ student.exams.first.percentage_score|default:"0" }}%</td>
-                                    <td>{{ student.trust_score|default:"100" }}%</td>
                                     <td>
-                                        <a href="{% url 'report_page' student.id %}" class="btn btn-outline-primary btn-sm me-1">View Report</a>
-                                        <a href="#" class="btn btn-outline-warning btn-sm me-1">Edit</a>
-                                        <a href="#" class="btn btn-outline-danger btn-sm">Delete</a>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white me-2" style="width: 35px; height: 35px; font-size: 0.9rem;">
+                                                {{ student.name|first }}
+                                            </div>
+                                            <span class="fw-bold">{{ student.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted">{{ student.email }}</td>
+                                    
+                                    <td>
+                                        {% if student.exams.first %}
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3">Completed</span>
+                                        {% else %}
+                                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-3">Pending</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="fw-bold">{{ student.exams.first.percentage_score|default:"0" }}%</td>
+                                    
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="trust-track">
+                                                <div class="trust-fill" style="width: {{ student.trust_score|default:'100' }}%; 
+                                                    background-color: {% if student.trust_score >= 80 %} var(--success) {% elif student.trust_score >= 50 %} var(--warning) {% else %} var(--danger) {% endif %};">
+                                                </div>
+                                            </div>
+                                            <span class="small fw-bold" style="color: {% if student.trust_score >= 80 %} var(--success) {% elif student.trust_score >= 50 %} var(--warning) {% else %} var(--danger) {% endif %};">
+                                                {{ student.trust_score|default:"100" }}%
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-end">
+                                        <a href="{% url 'report_page' student.id %}" class="btn-action btn-view" title="View Report">
+                                            <i class="fa-regular fa-eye"></i>
+                                        </a>
+                                        <a href="#" class="btn-action btn-edit" title="Edit">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <a href="#" class="btn-action btn-delete" title="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-inbox fa-2x mb-3 opacity-50"></i>
+                                        <p>No candidates found.</p>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -78,20 +410,23 @@
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Search functionality
+        // Search Functionality
         document.getElementById('searchBar').addEventListener('input', function () {
             const searchText = this.value.toLowerCase();
             const rows = document.querySelectorAll('tbody tr');
 
             rows.forEach(row => {
-                const name = row.cells[0].textContent.toLowerCase();
+                // Adjust index based on column structure
+                const name = row.cells[0].textContent.toLowerCase(); 
                 const email = row.cells[1].textContent.toLowerCase();
+                
                 if (name.includes(searchText) || email.includes(searchText)) {
                     row.style.display = '';
                 } else {

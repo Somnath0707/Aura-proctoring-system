@@ -1,222 +1,415 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Student Login with Face Recognition</title>
+    <title>Login | Aura Proctoring</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        /* =========================
+           1. GLOBAL THEME (AURA)
+        ========================= */
+        :root {
+            --primary: #6366f1;       /* Indigo */
+            --primary-glow: #818cf8;
+            --secondary: #a855f7;     /* Violet */
+            --accent: #22d3ee;        /* Cyan */
+            --bg-deep: #020617;       /* Deepest Slate */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
         body {
-            background-color: #f8f9fa;
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 25%);
             min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin: 0;
-            padding: 0;
+            overflow: hidden; 
         }
+
+        /* =========================
+           2. MODAL CONTAINER (Glass Card)
+        ========================= */
         .modal-content {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 90vw;
-            height: 90vh;
-            border-radius: 10px;
+            border-radius: 24px;
+            background: rgba(15, 23, 42, 0.7); /* Darker glass */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            overflow: hidden; /* rounded corners fix */
         }
-        .modal-title {
-            text-align: center;
-            width: 100%;
-            background-color: #0d6efd;
-            color: white;
-            font-size: 1.5rem;
-            padding: 10px 0;
-            border-radius: 10px 10px 0 0;
-        }
-        #loginModal {
-            display: block;
-            width: 90vw;
-            height: 90vh;
-        }
-        #webcam-stream {
-            max-width: 300px;
-            max-height: 280px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-        .modal-body {
-            padding: 15px;
-            height: calc(80vh - 120px);
-            overflow-y: auto;
-        }
-        .card {
-            margin-top: 10px;
-            border: 2px solid #0d6efd;
-            border-radius: 8px;
-        }
-        .captured-photo {
-            display: none;
-            margin-top: 10px;
-        }
-        .captured-photo img {
-            width: 100%;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        .btn-info {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-        .btn-info:hover {
-            background-color: #0a58ca;
-            border-color: #0a58ca;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
-        }
-        .button-row {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .modal-dialog {
-            margin: 0;
-            max-width: 100%;
-            height: 100vh;
-        }
+
+        /* =========================
+           3. MODAL HEADER
+        ========================= */
         .modal-header {
-            border-bottom: none;
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
         }
-        .modal-footer {
-            border-top: none;
-            justify-content: center;
-            padding: 10px;
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            width: 100%;
+            text-align: center;
         }
+
+        .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+            opacity: 0.5;
+        }
+        .btn-close:hover { opacity: 1; }
+
+        /* =========================
+           4. INSTRUCTIONS BOX
+        ========================= */
         .instructions {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: #c7d2fe;
+            border-radius: 16px;
+            padding: 1rem;
             font-size: 0.9rem;
-            margin-bottom: 15px;
         }
+
         .instructions h4 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            color: var(--primary-glow);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
+
         .instructions ul {
-            padding-left: 20px;
             margin-bottom: 0;
+            padding-left: 1.2rem;
         }
+        
+        .instructions li { margin-bottom: 4px; }
+
+        /* =========================
+           5. FORM INPUTS (Neon)
+        ========================= */
+        .form-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder {
+            color: #475569;
+        }
+
+        .form-control:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            color: #fff;
+        }
+
+        /* =========================
+           6. WEBCAM & PHOTO AREA
+        ========================= */
+        .video-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: #000;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #webcam-stream {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Scanning Line Animation */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            animation: scan 2s linear infinite;
+            opacity: 0.7;
+            z-index: 10;
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .captured-photo-card {
+            margin-top: 15px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 10px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+        
+        .captured-photo-card h5 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .captured-photo-card img {
+            border-radius: 10px;
+            max-width: 100%;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* =========================
+           7. BUTTONS (Glow)
+        ========================= */
+        .btn-capture {
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            color: var(--accent);
+            width: 100%;
+            border-radius: 12px;
+            padding: 10px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        .btn-capture:hover {
+            background: rgba(34, 211, 238, 0.2);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            justify-content: space-between;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s;
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
+            color: #fff;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* Responsive Layout fix */
+        .modal-dialog { max-width: 900px; }
+        .col-md-6 { padding: 1.5rem; }
     </style>
 </head>
 <body>
     
-    <!-- Login Modal -->
-    <div id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal fade show" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-modal="true" role="dialog" style="display: block;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <!-- Modal Header -->
+                
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Student Login with Face Recognition</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="loginModalLabel">
+                        <i class="fa-solid fa-shield-halved me-2 text-primary"></i> Secure Student Login
+                    </h5>
+                    <a href="{% url 'home' %}" class="btn-close"></a>
                 </div>
-                <div class="container mt-3">
-                    <!-- Instructions Section -->
-                    <div class="alert alert-warning instructions" role="alert">
-                        <h4 class="alert-heading">Instructions for Login:</h4>
-                        <ul>
-                            
-                            <li>First Click on <strong>Capture Photo</strong> to take a snapshot.</li>
-                            <li>Enter your email and password in the login form.</li>
-                            <li>Click <strong>Login</strong> to authenticate.</li>
-                        </ul>
-                    </div>
 
-                    <!-- Modal Body -->
-                    <div class="modal-body">
-                        <div class="row">
-                            <!-- Login Form Section -->
-                            <div class="col-md-6">
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        
+                        <div class="col-md-6 border-end border-secondary border-opacity-10">
+                            <div class="p-4">
+                                <div class="alert instructions mb-4" role="alert">
+                                    <h4><i class="fa-solid fa-circle-info me-2"></i>Login Steps</h4>
+                                    <ul>
+                                        <li>Position your face clearly in the camera.</li>
+                                        <li>Click <strong>Capture Photo</strong> to verify identity.</li>
+                                        <li>Enter credentials and click <strong>Login</strong>.</li>
+                                    </ul>
+                                </div>
+
                                 <form id="login-form" method="POST" enctype="multipart/form-data">
                                     {% csrf_token %}
-                                    <div id="error-message" class="alert alert-danger d-none"></div>
+                                    <div id="error-message" class="alert alert-danger d-none text-center p-2 mb-3 small"></div>
+                                    
                                     <div class="mb-3">
-                                        <label for="username" class="form-label">Email:</label>
-                                        <input type="email" id="username" name="email" class="form-control" placeholder="Enter your email" required>
+                                        <label for="username" class="form-label">Email Address</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-transparent border-secondary border-opacity-25 text-muted"><i class="fa-regular fa-envelope"></i></span>
+                                            <input type="email" id="username" name="email" class="form-control border-start-0 ps-0" placeholder="student@university.edu" required>
+                                        </div>
                                     </div>
+                                    
                                     <div class="mb-3">
-                                        <label for="password" class="form-label">Password:</label>
-                                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                                        <label for="password" class="form-label">Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-transparent border-secondary border-opacity-25 text-muted"><i class="fa-solid fa-lock"></i></span>
+                                            <input type="password" id="password" name="password" class="form-control border-start-0 ps-0" placeholder="••••••••" required>
+                                        </div>
                                     </div>
                                     <input type="hidden" id="captured_photo_input" name="captured_photo">
                                 </form>
                             </div>
+                        </div>
 
-                            <!-- Face Recognition Section -->
-                            <div class="col-md-6 text-center">
-                                <h5>Face Recognition</h5>
-                                <div class="position-relative">
-                                    <img id="webcam-stream" src="{% url 'video_feed' %}" alt="Video Feed" class="img-fluid rounded shadow">
+                        <div class="col-md-6 bg-black bg-opacity-25">
+                            <div class="p-4 d-flex flex-column h-100 justify-content-center">
+                                <h5 class="text-center mb-3 text-light font-monospace small text-uppercase ls-1">Biometric Feed</h5>
+                                
+                                <div class="video-wrapper">
+                                    <div class="scan-line"></div>
+                                    <img id="webcam-stream" src="{% url 'video_feed' %}" alt="Live Camera Feed">
                                     <canvas id="canvas" class="d-none"></canvas>
                                 </div>
-                                <button id="take-photo-btn" class="btn btn-info mt-3">Capture Photo</button>
 
-                                <!-- Captured Photo Section -->
-                                <div class="captured-photo card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Captured Photo</h5>
-                                        <img id="captured-photo" alt="Captured Photo" class="img-thumbnail">
-                                    </div>
+                                <button id="take-photo-btn" class="btn btn-capture">
+                                    <i class="fa-solid fa-camera me-2"></i> Capture Photo
+                                </button>
+
+                                <div class="captured-photo-card" id="photo-preview-card">
+                                    <h5><i class="fa-solid fa-check-circle text-success me-1"></i> Identity Captured</h5>
+                                    <img id="captured-photo" alt="Captured Photo">
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Modal Footer with Buttons aligned in a row -->
-                    <div class="modal-footer button-row">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="login-btn">Login</button>
                     </div>
                 </div>
+
+                <div class="modal-footer">
+                    <a href="{% url 'home' %}" class="btn btn-cancel">Cancel</a>
+                    <button type="button" class="btn btn-login" id="login-btn">
+                        Authenticate & Login <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS and Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const webcamStream = document.getElementById('webcam-stream');
         const takePhotoBtn = document.getElementById('take-photo-btn');
         const canvas = document.getElementById('canvas');
         const capturedPhoto = document.getElementById('captured-photo');
+        const previewCard = document.getElementById('photo-preview-card');
         const capturedPhotoInput = document.getElementById('captured_photo_input');
         const errorMessage = document.getElementById('error-message');
         const loginBtn = document.getElementById('login-btn');
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        // CSRF Token safety check
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        const csrfToken = csrfInput ? csrfInput.value : '';
 
         let photoCaptured = false;
 
+        // Capture Photo Logic
         takePhotoBtn.addEventListener('click', () => {
-            canvas.width = webcamStream.width;
-            canvas.height = webcamStream.height;
+            // Set canvas size to match the stream
+            canvas.width = webcamStream.clientWidth || 640;
+            canvas.height = webcamStream.clientHeight || 480;
 
             const context = canvas.getContext('2d');
+            // Draw the current frame from the img tag onto the canvas
             context.drawImage(webcamStream, 0, 0, canvas.width, canvas.height);
 
             const photoData = canvas.toDataURL('image/png');
+            
+            // Show preview
             capturedPhoto.src = photoData;
+            previewCard.style.display = 'block'; // Show the preview card
+            
+            // Set input value
             capturedPhotoInput.value = photoData;
             photoCaptured = true;
+            
+            // UI Feedback
+            takePhotoBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate me-2"></i> Retake Photo';
+            takePhotoBtn.classList.remove('btn-capture');
+            takePhotoBtn.classList.add('btn-secondary', 'mt-3'); // Styling change
+            
             errorMessage.classList.add('d-none');
         });
 
+        // Login Logic
         loginBtn.addEventListener('click', (event) => {
             if (!photoCaptured) {
                 event.preventDefault();
-                errorMessage.textContent = "Please capture your photo before logging in.";
+                errorMessage.textContent = "⚠️ Biometric verification required. Please capture your photo.";
                 errorMessage.classList.remove('d-none');
             } else {
+                // Prepare form data
+                loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Verifying...';
+                loginBtn.disabled = true;
+
                 const formData = new FormData();
                 formData.append('email', document.getElementById('username').value);
                 formData.append('password', document.getElementById('password').value);
@@ -232,16 +425,19 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert("Welcome, " + data.student_name);
                         window.location.href = data.redirect_url;
                     } else {
-                        errorMessage.textContent = data.error;
+                        errorMessage.innerHTML = `<i class="fa-solid fa-triangle-exclamation me-1"></i> ${data.error}`;
                         errorMessage.classList.remove('d-none');
+                        loginBtn.innerHTML = 'Authenticate & Login <i class="fa-solid fa-arrow-right ms-2"></i>';
+                        loginBtn.disabled = false;
                     }
                 })
                 .catch(error => {
-                    errorMessage.textContent = "An error occurred during login.";
+                    errorMessage.textContent = "Server connection failed. Please try again.";
                     errorMessage.classList.remove('d-none');
+                    loginBtn.innerHTML = 'Authenticate & Login';
+                    loginBtn.disabled = false;
                 });
             }
         });

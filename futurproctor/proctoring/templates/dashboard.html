@@ -1,53 +1,297 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - FuturProctor</title>
+    <title>Candidate Dashboard | Aura</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================
+           1. AURA THEME
+        ========================= */
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --accent: #22d3ee;
+            --bg-deep: #020617;
+            --glass-bg: rgba(30, 41, 59, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.1), transparent 40%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .navbar-brand {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* =========================
+           2. NAVBAR
+        ========================= */
+        .navbar {
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-logout {
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .btn-logout:hover { color: #f87171; }
+
+        /* =========================
+           3. HERO CARD
+        ========================= */
+        .welcome-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 24px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        /* Start Button */
+        .btn-start {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            color: white;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.6);
+            color: white;
+        }
+
+        /* =========================
+           4. INSTRUCTION GRID
+        ========================= */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .rule-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .rule-card:hover {
+            border-color: rgba(34, 211, 238, 0.4);
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .rule-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .rule-card h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .rule-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* =========================
+           5. FOOTER
+        ========================= */
+        .dashboard-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="card shadow-lg">
-            <!-- Header Section -->
-            <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #007bff; color: white; height: 80px;">
-                <!-- Start Exam Button on the Left -->
-                <button id="start-exam-btn" class="btn btn-success">Start Exam</button>
-                
-                <!-- Welcome Text Centered -->
-                <h2 class="mx-auto">Welcome, {{ user.first_name}}!</h2>
-                
-            
-            </div>
 
-            {% comment %} <!-- Space between Header and Content -->
-            <div class="card-body mt-4"> {% endcomment %}
-
-                <!-- Rules Section -->
-                <h5 class="text-center text-primary mt-4">Important Rules for Online Exam</h5>
-                <ol>
-                    <li><strong> Device and Internet</strong>: Ensure your device is fully charged or connected to a reliable power source and has a stable, high-speed internet connection for the entire duration of the exam.</li>
-                    <li><strong> Webcam and Microphone</strong>: Keep your webcam and microphone turned on at all times. These are mandatory for real-time monitoring during the exam.</li>
-                    <li><strong> No Unauthorized Tabs or Devices</strong>: Refrain from opening additional browser tabs, applications, or using external devices such as phones, smartwatches, or notes during the session.</li>
-                    <li><strong> Stay in Frame</strong>: Ensure your face is clearly visible in the webcam frame throughout the exam. Avoid looking away from the screen frequently.</li>
-                    <li><strong> Quiet and Distraction-Free Environment</strong>: Select a quiet location where you won’t be interrupted. Background noise or distractions may lead to your session being flagged.</li>
-                    <li><strong> Individual Effort Only</strong>: The examination is strictly individual. Any form of collaboration or communication with others is prohibited.</li>
-                    <li><strong> Behavior Monitoring</strong>: Be aware that AI systems and live proctors may monitor your activity, including webcam and microphone feeds. Suspicious activities will be flagged for review.</li>
-                    <li><strong> Consequences of Rule Violations</strong>: Any violation of these rules, including misconduct or suspicious behavior, may lead to immediate termination of your exam session, invalidation of your results, and possible disciplinary action.</li>
-                </ol>
-            </div>
-
-            <!-- Footer Section -->
-            <div class="card-footer text-center">
-                &copy; 2025 FuturProctor. All rights reserved.
+    <nav class="navbar mb-5">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fa-solid fa-shield-halved text-primary"></i> Aura
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <div class="user-pill d-none d-md-flex">
+                    <i class="fa-solid fa-circle-user text-accent"></i>
+                    <span>{{ user.first_name }}</span>
+                </div>
+                <a href="{% url 'logout' %}" class="btn-logout">
+                    <i class="fa-solid fa-power-off me-1"></i> Logout
+                </a>
             </div>
         </div>
+    </nav>
+
+    <div class="container">
+        
+        <div class="welcome-card text-center text-md-start d-md-flex justify-content-between align-items-center">
+            <div class="mb-4 mb-md-0">
+                <h1 class="welcome-title">Welcome back, {{ user.first_name }}!</h1>
+                <p class="text-light opacity-75 mb-0" style="max-width: 500px;">
+                    Your environment is ready. The AI proctoring system is active and calibrated for your session.
+                </p>
+            </div>
+            <div>
+                <button id="start-exam-btn" class="btn-start">
+                    Launch Assessment <i class="fa-solid fa-rocket"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fa-solid fa-clipboard-check text-primary"></i> Assessment Protocols
+        </div>
+
+        <div class="rules-grid">
+            <div class="rule-card">
+                <div class="rule-icon"><i class="fa-solid fa-video"></i></div>
+                <h5>Webcam Mandatory</h5>
+                <p>Keep your camera enabled. The AI continuously monitors for presence and face verification.</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-icon"><i class="fa-solid fa-globe"></i></div>
+                <h5>Stable Connection</h5>
+                <p>Ensure a high-speed internet connection. Disconnections may lead to automatic submission.</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-icon"><i class="fa-solid fa-window-maximize"></i></div>
+                <h5>Browser Lockdown</h5>
+                <p>Do not switch tabs or minimize the window. Navigation attempts are logged as violations.</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                <div class="rule-title">Zero Tolerance</div>
+                <p>Phones, smartwatches, and external devices are strictly prohibited in the testing area.</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-icon"><i class="fa-solid fa-eye"></i></div>
+                <h5>Focus Tracking</h5>
+                <p>Maintain eye contact with the screen. Frequent looking away will trigger gaze alerts.</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+                <h5>Audio Analysis</h5>
+                <p>Find a quiet environment. Background speech or noise will be flagged for review.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-footer">
+            <p>&copy; 2026 Aura Intelligent Systems. All Rights Reserved.</p>
+        </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById('start-exam-btn').addEventListener('click', function () {
-            window.location.href = '/exam'; // Replace with your actual exam start URL
+            // Optional: Add a loading state
+            this.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Initializing...';
+            this.style.opacity = '0.8';
+            
+            setTimeout(() => {
+                window.location.href = '/exam'; 
+            }, 800);
         });
     </script>
 </body>

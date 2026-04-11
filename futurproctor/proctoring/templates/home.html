@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FutureProctor - Home</title>
+    <title>Aura - Intelligent Integrity</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2">
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="{% static 'images\monitor_logo.png' %}" alt="FutureProctor Logo" class="logo">
+                <img src="{% static 'images/monitor_logo.png' %}" alt="Aura Logo" class="logo"> 
+                <span class="ms-2 fw-bold text-primary">Aura</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -22,195 +22,196 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Platform</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Support</a></li>
                     <li class="nav-item"><a class="btn btn-primary" href="{% url 'login' %}" role="button">Login</a></li>
-                    <li class="nav-item"><a class="btn btn-secondary ms-2" href="{% url 'registration' %}" role="button">Register</a></li>
+                    <li class="nav-item"><a class="btn btn-secondary ms-2" href="{% url 'registration' %}" role="button">Get Started</a></li>
                 </ul>
             </div>
         </div>
     </nav>
+
     <main class="hero-section">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-4">AI-Based Online Exam Proctoring System</h1>
-                    <h2 class="mb-4">A Proctoring System Powered by Artificial Intelligence!</h2>
+                    <h1 class="display-4">Aura Intelligent Proctoring</h1>
+                    <h2 class="mb-4 text-muted">The new standard for secure, AI-driven assessments.</h2>
+                    <p class="lead mb-4">Experience seamless integrity with Aura's advanced monitoring capabilities.</p>
                     <div class="cta-buttons">
-                        <a href="https://youtu.be/O8kfFmwkfOU" class="btn btn-primary btn-lg me-3">Watch Promo Video</a>
-                        {% comment %} <a href="#" class="btn btn-outline-primary btn-lg">Detailed Presentation</a> {% endcomment %}
+                        <a href="" class="btn btn-primary btn-lg me-3">View Demo</a>
+                        {% comment %} <a href="#" class="btn btn-outline-primary btn-lg">Documentation</a> {% endcomment %}
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="hero-image-container">
-                        <img src="{% static 'images/ai-procotor.png' %}" alt="AI Proctor Dashboard" class="img-fluid floating-image">
+                        <img src="{% static 'images/ai-procotor.png' %}" alt="Aura Dashboard Interface" class="img-fluid floating-image">
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
     {% load static %}
-<section class="ai-proctor-features">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="ai-proctor-illustration">
-                    <img src="{% static 'images/ai-sec.png' %}" alt="AI Proctor Illustration" class="img-fluid ai-head-image">
-                    <div class="ai-head-graphic">
-                        <div class="ai-text">AI</div>
-                        <div class="circuit-lines"></div>
-                        <div class="floating-dots"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="features-content">
-                    <h2 class="section-title">AI-Based Online Exam Proctoring System</h2>
-                    <h3 class="section-subtitle">A Necessary Ingredient for Credible Online Certificates!</h3>
-                    <ul class="features-list">
-                        <li>Ensures credibility of exams results</li>
-                        <li>Very easy to use by both instructors and students</li>
-                        <li>Works with any examination portal!</li>
-                        <li>Minimal traffic to work even with weak internet connections</li>
-                        <li>Real time monitoring and detailed final reports for all suspicious activities by students</li>
-                        <li>Uses face recognition, audio analysis to ensure in class exam similar experience</li>
-                        <li>And many other practical features ...</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-{% load static %}
-<section class="advanced-features-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <h2 class="section-title">Advanced Proctoring Features</h2>
-                <p class="section-subtitle">Comprehensive Monitoring for Exam Integrity</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{% static 'images/facial.png' %}" alt="Browser Tab Detection" class="img-fluid">
-                    </div>
-                    <h3>Face verification</h3>
-                    <p>The System opens the exam only after facial verification. The student uploads his picture during registration, and it is used in all his exams to make sure he doesn't leave the examination place.</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{% static 'images/touch.png' %}" alt="Browser Tab Detection" class="img-fluid">
-                    </div>
-                    <h3>Browser Tab Switching Detection</h3>
-                    <p>This system will monitor tab switching and flag any unauthorized attempts during the exam.</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{% static 'images/object.png' %}" alt="Object Detection" class="img-fluid">
-                    </div>
-                    <h3>Object Detection</h3>
-                    <p>This system will detect unauthorized objects like books and smartphones during the exam.</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{% static 'images/eye.png' %}" alt="Gaze Detection" class="img-fluid">
-                    </div>
-                    <h3>Gaze Detection</h3>This system will detect gaze movement to ensure candidates stay focused on the exam screen.</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{% static 'images/mp.png' %}" alt="Multiple Person Detection" class="img-fluid">
-                    </div>
-                    <h3>Multiple Person Detection</h3>This system will detect the presence of multiple individuals during the exam to ensure proper authentication.</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <img src="{% static 'images/audio.png' %}" alt="Audio Analysis" class="img-fluid">
-                    </div>
-                    <h3>Audio Analysis</h3>
-                    <p>This system will record and analyze background sounds to detect any suspicious noises during the exam.</p>
-            </div>
-            
-        </div>
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <p class="data-storage-note">
-                    <strong>Secure Data Management:</strong> All collected data is securely stored in PostgreSQL for comprehensive review and reporting.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Contact Section -->
-<section class="contact-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <h2 class="section-title">Contact Us</h2>
-                <p class="section-subtitle">Get in Touch for More Information</p>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <form class="contact-form">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" placeholder="Your Name" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <input type="email" class="form-control" placeholder="Your Email" required>
+    <section class="ai-proctor-features">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="ai-proctor-illustration">
+                        <img src="{% static 'images/ai-sec.png' %}" alt="Aura AI Analysis" class="img-fluid ai-head-image">
+                        <div class="ai-head-graphic">
+                            <div class="ai-text">Aura</div>
+                            <div class="circuit-lines"></div>
+                            <div class="floating-dots"></div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Subject" required>
+                </div>
+                <div class="col-lg-6">
+                    <div class="features-content">
+                        <h2 class="section-title">Why Choose Aura?</h2>
+                        <h3 class="section-subtitle">Defining Credibility in Digital Education</h3>
+                        <ul class="features-list">
+                            <li><strong>Uncompromised Integrity:</strong> Guarantees the authenticity of every exam result.</li>
+                            <li><strong>Universal Compatibility:</strong> seamlessly integrates with any LMS portal.</li>
+                            <li><strong>Bandwidth Optimized:</strong> Designed to perform flawlessly even on low-speed connections.</li>
+                            <li><strong>Real-time Analytics:</strong> Instant monitoring and comprehensive post-exam integrity reports.</li>
+                            <li><strong>Privacy First:</strong> Secure audio-visual analysis that mimics a physical classroom environment.</li>
+                        </ul>
                     </div>
-                    <div class="mb-3">
-                        <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Footer -->
-<footer class="footer text-center py-4">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <p>&copy; 2025 AI Proctor. All Rights Reserved.</p>
-                <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Contact</a>
+    {% load static %}
+    <section class="advanced-features-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="section-title">The Aura Suite</h2>
+                    <p class="section-subtitle">Comprehensive Defense Against Academic Dishonesty</p>
                 </div>
-                <div class="social-links mt-3">
-                    <a href="https://www.facebook.com/ramdular077" class="text-light mx-2"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://x.com/Ram103888" class="text-light mx-2"><i class="fab fa-twitter"></i></a>
-                    <a href="https://www.linkedin.com/in/ram-dular-yadav-1611b0228/" class="text-light mx-2"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="text-light mx-2"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <img src="{% static 'images/facial.png' %}" alt="Biometric Verification" class="img-fluid">
+                        </div>
+                        <h3>Biometric Identity</h3>
+                        <p>Aura initiates sessions only after strict facial verification using stored biometric data, ensuring the registered candidate is present throughout the duration.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <img src="{% static 'images/touch.png' %}" alt="Environment Lockdown" class="img-fluid">
+                        </div>
+                        <h3>Environment Lockdown</h3>
+                        <p>Our intelligent browser guard monitors tab switching and background activity, flagging any unauthorized navigation immediately.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <img src="{% static 'images/object.png' %}" alt="Contraband Detection" class="img-fluid">
+                        </div>
+                        <h3>Object Recognition</h3>
+                        <p>Real-time computer vision detects unauthorized items such as mobile phones, textbooks, or smart devices within the frame.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <img src="{% static 'images/eye.png' %}" alt="Attention Tracking" class="img-fluid">
+                        </div>
+                        <h3>Attention Tracking</h3>
+                        <p>Advanced gaze estimation algorithms analyze eye movements to detect loss of focus or suspicious off-screen references.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <img src="{% static 'images/mp.png' %}" alt="Impersonation Control" class="img-fluid">
+                        </div>
+                        <h3>Impersonation Control</h3>
+                        <p>Detects the presence of multiple faces or unauthorized individuals in the camera frame to prevent assistance during the exam.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <img src="{% static 'images/audio.png' %}" alt="Acoustic Analysis" class="img-fluid">
+                        </div>
+                        <h3>Acoustic Analysis</h3>
+                        <p>Aura captures and analyzes ambient noise to identify whispers, speech patterns, or unauthorized communication.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="data-storage-note text-muted">
+                        <i class="fas fa-lock"></i> <strong>Secure Infrastructure:</strong> All sensitive data is encrypted and securely stored in enterprise-grade PostgreSQL databases.
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
-</footer>
+    </section>
+
+    <section class="contact-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="section-title">Get in Touch</h2>
+                    <p class="section-subtitle">Ready to secure your institution's exams?</p>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <form class="contact-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" placeholder="Full Name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="email" class="form-control" placeholder="Work Email" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="5" placeholder="How can Aura help you?" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Send Inquiry</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer text-center py-4 bg-dark text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p>&copy; 2026 Aura Systems. All Rights Reserved.</p>
+                    <div class="footer-links mb-3">
+                        <a href="#" class="text-light text-decoration-none mx-2">Privacy Policy</a>
+                        <a href="#" class="text-light text-decoration-none mx-2">Terms of Service</a>
+                        <a href="#" class="text-light text-decoration-none mx-2">Support</a>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="text-light mx-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light mx-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light mx-2"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-light mx-2"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

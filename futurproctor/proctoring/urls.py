@@ -22,7 +22,7 @@ urlpatterns = [
     path('record_tab_switch/', views.record_tab_switch, name='record_tab_switch'),
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('report_page/<int:student_id>/', views.report_page, name='report_page'),
-    path('logout/',views.logout, name='logout'),
+    path('logout/', views.logout_view, name='logout'),
     path('download_report/<int:student_id>/', views.download_report, name='download_report'),
     path('admin_dashboard/add_question/', add_question, name='add_question'),
 
