@@ -25,7 +25,7 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     photo = models.ImageField(upload_to='student_photos/')
     face_encoding = models.JSONField(null=True, blank=True)
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(default=timezone.now)
     feedback = models.TextField(null=True, blank=True, max_length=1000)
 
     def __str__(self):
@@ -36,7 +36,7 @@ class Exam(models.Model):
     exam_name = models.CharField(max_length=255, default='Default Exam Name')
     total_questions = models.IntegerField(null=True, blank=True)
     correct_answers = models.IntegerField(null=True, blank=True)
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(default=timezone.now)
     status = models.CharField(
         max_length=50,
         choices=[('ongoing', 'Ongoing'), ('completed', 'Completed'), ('cancelled', 'Cancelled')],
@@ -65,16 +65,16 @@ class CheatingEvent(models.Model):
     cheating_flag = models.BooleanField(default=False)
     event_type = models.CharField(max_length=50, blank=True, null=True)
     # Use a single timestamp field. Here we use Nepal time.
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(default=timezone.now)
     detected_objects = models.JSONField(default=list)
     tab_switch_count = models.IntegerField(default=0)
 
 class CheatingImage(models.Model):
     event = models.ForeignKey(CheatingEvent, on_delete=models.CASCADE, related_name='cheating_images')
     image = models.ImageField(upload_to='cheating_images/')
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(default=timezone.now)
 
 class CheatingAudio(models.Model):
     event = models.ForeignKey(CheatingEvent, on_delete=models.CASCADE, related_name='cheating_audios')
     audio = models.FileField(upload_to='cheating_audios/', blank=True, null=True)
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(default=timezone.now)

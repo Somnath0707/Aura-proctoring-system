@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Integrity Report: {{ student.name }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #333333;
+            font-size: 14px;
+        }
+        h1, h2, h3 {
+            color: #4f46e5;
+            border-bottom: 1px solid #dddddd;
+            padding-bottom: 5px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #cccccc;
+            background-color: #f9f9f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #eeeeee;
+        }
+        th {
+            color: #666666;
+            width: 40%;
+        }
+        .alert-danger {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+        .alert-success {
+            color: #15803d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Aura Proctoring Report</h1>
+        <p>Candidate: {{ student.name }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Profile Information</h2>
+        <table>
+            <tr><th>Name</th><td>{{ student.name }}</td></tr>
+            <tr><th>Email</th><td>{{ student.email }}</td></tr>
+            <tr><th>Exam</th><td>{{ exam.exam_name|default:"General Assessment" }}</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Performance</h2>
+        <table>
+            <tr><th>Total Questions</th><td>{{ total_questions }}</td></tr>
+            <tr><th>Correct Answers</th><td>{{ correct_answers }}</td></tr>
+            <tr><th>Score</th><td>{{ exam.percentage_score|default:0 }}%</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Integrity Analysis</h2>
+        <p>
+            {% if cheating_status %}
+                <span class="alert-danger">FLAGGED: Suspicious activity detected.</span>
+            {% else %}
+                <span class="alert-success">VERIFIED: Session clean.</span>
+            {% endif %}
+        </p>
+        <table>
+            <tr><th>Objects Detected</th><td>{{ detected_objects }}</td></tr>
+            <tr><th>Tab Switches</th><td>{{ total_tab_switch_count }}</td></tr>
+            <tr><th>Visual Events Logged</th><td>{{ cheating_images|length }}</td></tr>
+            <tr><th>Audio Events Logged</th><td>{{ audio_urls|length }}</td></tr>
+        </table>
+    </div>
+</body>
+</html>

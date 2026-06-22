@@ -399,20 +399,26 @@ def process_audio(request):
 
 # Background processing for video
 def background_processing(request):
-    """Runs video processing in the background."""
+    """Runs video processing in the background (1 frame per second)."""
     cap = cv2.VideoCapture(0)
-    frame_count = 0
+    last_process_time = time.time()
 
     while not stop_event.is_set():
         ret, frame = cap.read()
         if not ret:
             break
         
-        if frame_count % 2 == 0:
-            process_frame(frame, request)
+        current_time = time.time()
+        # Only run heavy AI models once per second to prevent high CPU usage
+        if current_time - last_process_time >= 1.0:
+            try:
+                process_frame(frame, request)
+                last_process_time = current_time
+            except Exception as e:
+                logger.error(f"Error in video processing: {e}")
         
-        frame_count += 1
-        time.sleep(0.5)
+        # Short sleep to avoid maxing out CPU on frame reading
+        time.sleep(0.05)
     
     cap.release()
 
@@ -838,7 +844,7 @@ def download_report(request, student_id):
     }
     
     # Render the HTML template with context
-    template = get_template('report_page.html')
+    template = get_template('report_pdf.html')
     html = template.render(context)
 
     # Create a HttpResponse with PDF headers

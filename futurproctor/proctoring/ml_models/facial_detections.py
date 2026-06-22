@@ -1,75 +1,72 @@
 import cv2
 import mediapipe as mp
-import numpy as np
 
-# Initialize MediaPipe Face Detection and Face Mesh
-mp_face_detection = mp.solutions.face_detection
-mp_drawing = mp.solutions.drawing_utils
 mp_face_mesh = mp.solutions.face_mesh
+# Use max_num_faces=1 for just the candidate. 
+face_mesh = mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.7)
 
-# Initialize face detection and face mesh models
-face_detection = mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence=0.5)
-face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5)
-
-def detectFace(frame):
-    """
-    Detects faces, landmarks, and alerts on suspicious activities (e.g., multiple faces or suspicious gaze).
-    Returns: faceCount, annotated frame
-    """
-    # Convert the frame to RGB as required by MediaPipe
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    faceCount = 0
-
-    # Detect faces in the frame
-    detection_results = face_detection.process(rgb_frame)
+def gaze_tracking_debug(frame):
+    """Detect gaze direction based on relative iris position and draw visual debug points."""
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = face_mesh.process(frame_rgb)
+    
     annotated_frame = frame.copy()
+    h, w, _ = frame.shape
 
-    if detection_results.detections:
-        faceCount = len(detection_results.detections)
+    if results.multi_face_landmarks:
+        landmarks = results.multi_face_landmarks[0].landmark
 
-        # Draw bounding boxes and landmarks
-        for detection in detection_results.detections:
-            mp_drawing.draw_detection(annotated_frame, detection)
+        # --- Viewer's Left Eye ---
+        # Outer corner: 33, Inner corner: 133, Iris center: 468
+        p_left_outer = landmarks[33]
+        p_left_inner = landmarks[133]
+        p_left_iris = landmarks[468]
 
-    # Alert for multiple faces
-    if faceCount > 1:
-        cv2.putText(annotated_frame, 'Alert: Multiple Faces Detected!', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        # --- Viewer's Right Eye ---
+        # Inner corner: 362, Outer corner: 263, Iris center: 473
+        p_right_inner = landmarks[362]
+        p_right_outer = landmarks[263]
+        p_right_iris = landmarks[473]
 
-    # Detect facial landmarks using Face Mesh
-    mesh_results = face_mesh.process(rgb_frame)
-    if mesh_results.multi_face_landmarks:
-        for face_landmarks in mesh_results.multi_face_landmarks:
-            # Draw the facial landmarks on the frame
-            mp_drawing.draw_landmarks(
-                image=annotated_frame,
-                landmark_list=face_landmarks,
-                connections=mp_face_mesh.FACEMESH_TESSELATION,
-                landmark_drawing_spec=None,
-                connection_drawing_spec=mp_drawing.DrawingSpec(color=(0, 255, 0), thickness=1, circle_radius=1)
-            )
+        # --- DRAW DEBUGGING POINTS ---
+        # Draw Left Eye (Red outer, Blue inner, Green iris)
+        cv2.circle(annotated_frame, (int(p_left_outer.x * w), int(p_left_outer.y * h)), 3, (0, 0, 255), -1)
+        cv2.circle(annotated_frame, (int(p_left_inner.x * w), int(p_left_inner.y * h)), 3, (255, 0, 0), -1)
+        cv2.circle(annotated_frame, (int(p_left_iris.x * w), int(p_left_iris.y * h)), 3, (0, 255, 0), -1)
 
-    return faceCount, annotated_frame
+        # Draw Right Eye
+        cv2.circle(annotated_frame, (int(p_right_inner.x * w), int(p_right_inner.y * h)), 3, (255, 0, 0), -1)
+        cv2.circle(annotated_frame, (int(p_right_outer.x * w), int(p_right_outer.y * h)), 3, (0, 0, 255), -1)
+        cv2.circle(annotated_frame, (int(p_right_iris.x * w), int(p_right_iris.y * h)), 3, (0, 255, 0), -1)
 
+        # --- CALCULATE GAZE RATIO ---
+        # Ratio = Where is the iris located between the inner and outer corners?
+        left_eye_width = p_left_inner.x - p_left_outer.x
+        left_iris_pos = p_left_iris.x - p_left_outer.x
+        left_ratio = left_iris_pos / left_eye_width if left_eye_width != 0 else 0.5
 
-# if __name__ == "__main__":
-#     cap = cv2.VideoCapture(0)
-#     if not cap.isOpened():
-#         print("Error: Could not open camera.")
-#         exit()
+        right_eye_width = p_right_outer.x - p_right_inner.x
+        right_iris_pos = p_right_iris.x - p_right_inner.x
+        right_ratio = right_iris_pos / right_eye_width if right_eye_width != 0 else 0.5
 
-#     print("Press 'q' to exit.")
-#     while True:
-#         ret, frame = cap.read()
-#         if not ret:
-#             print("Error: Unable to fetch frame.")
-#             break
+        gaze_ratio = (left_ratio + right_ratio) / 2
 
-#         faceCount, annotated_frame = detectFace(frame)
-#         cv2.imshow('Facial Detection and Monitoring', annotated_frame)
+        # --- EVALUATE DIRECTION ---
+        # 0.5 is perfectly centered. 
+        if gaze_ratio < 0.42:
+            gaze_direction = "RIGHT"
+            color = (0, 0, 255) # Red warning
+        elif gaze_ratio > 0.58:
+            gaze_direction = "LEFT"
+            color = (0, 0, 255) # Red warning
+        else:
+            gaze_direction = "CENTER"
+            color = (0, 255, 0) # Green OK
 
-#         # Quit the application on pressing 'q'
-#         if cv2.waitKey(1) & 0xFF == ord('q'):
-#             break
+        # Print the status on the screen
+        cv2.putText(annotated_frame, f'Gaze: {gaze_direction} ({gaze_ratio:.2f})', (10, 80), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
 
-#     cap.release()
-#     cv2.destroyAllWindows()
+        return {"gaze": gaze_direction, "ratio": round(gaze_ratio, 2)}, annotated_frame
+
+    return {"gaze": "NO FACE", "ratio": None}, annotated_frame
